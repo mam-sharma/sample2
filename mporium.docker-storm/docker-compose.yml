@@ -1,0 +1,91 @@
+version: '2'
+
+services:
+  zookeeper1:
+    build:
+      context: zookeeper
+    image: mporium/zookeeper
+    environment:
+      - MYID=1
+    ports:
+      - "2181"
+      - "2888"
+      - "3888"
+
+  zookeeper2:
+    build:
+      context: zookeeper
+    image: mporium/zookeeper
+    environment:
+      - MYID=2
+    ports:
+      - "2181"
+      - "2888"
+      - "3888"
+
+  zookeeper3:
+    build:
+      context: zookeeper
+    image: mporium/zookeeper
+    environment:
+      - MYID=3
+    ports:
+      - "2181"
+      - "2888"
+      - "3888"
+
+  nimbus:
+    build:
+      context: storm-nimbus
+    image: mporium/storm-nimbus
+    ports:
+      - "3772:3772"
+      - "3773:3773"
+      - "3774:3774"
+      - "6627:6627"
+      - "2222:22"
+    # This is mainly for testing
+    #volumes:
+    #  - ~:/host-home
+    environment:
+      - SEQ_URL=https://seq-impact-dev.mporium.io/api/events/raw
+      - SEQ_API_KEY=qcjNoo8PKzNqkV2Ml10t
+      - IMPACT_ENVIRONMENT=local
+
+  supervisor:
+    build:
+      context: storm-supervisor
+    image: mporium/storm-supervisor
+    ports:
+      - "8000"
+    environment:
+      - SEQ_URL=https://seq-impact-dev.mporium.io/api/events/raw
+      - SEQ_API_KEY=qcjNoo8PKzNqkV2Ml10t
+      - IMPACT_ENVIRONMENT=local
+
+  ui:
+    build:
+      context: storm-ui
+    image: mporium/storm-ui
+    ports:
+      - "8080:8080"
+    environment:
+      - SEQ_URL=https://seq-impact-dev.mporium.io/api/events/raw
+      - SEQ_API_KEY=qcjNoo8PKzNqkV2Ml10t
+      - IMPACT_ENVIRONMENT=local
+
+  grafana:
+    build:
+      context: grafana
+    image: mporium/grafana
+    ports:
+      - "3000:3000"
+
+  influxdb:
+    image: tutum/influxdb:0.13
+    environment:
+      - PRE_CREATE_DB=metrics
+      - GRAPHITE_DB=metrics
+    ports:
+      - "8086"
+      - "2003"

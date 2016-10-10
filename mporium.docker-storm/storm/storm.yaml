@@ -1,0 +1,12 @@
+storm.zookeeper.servers:
+    - "zookeeper1"
+    - "zookeeper2"
+    - "zookeeper3"
+nimbus.seeds: [ "nimbus" ]
+drpc.servers:
+  - "nimbus"
+drpc.port: 3772
+drpc.invocations.port: 3773
+storm.log.dir: "/var/log/storm"
+worker.heap.memory.mb: 2048
+topology.workers: 10
